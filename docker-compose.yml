@@ -1,0 +1,40 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: chickenshop-mongodb
+    ports:
+      - "27018:27017" # Mapper le port MongoDB du conteneur au port de l'hôte
+    volumes:
+      - mongo-data:/data/db # Persister les données de la base de données
+    networks:
+      - chickenshop-network
+
+  backend:
+    build: ./backend # Construire l'image à partir du Dockerfile dans le dossier backend
+    container_name: chickenshop-backend
+    ports:
+      - "5000:5000" # Mapper le port du backend au port de l'hôte
+    environment:
+      MONGO_URI: mongodb://mongo:27017/chickenshopdb # Utilisez le nom du service 'mongo' comme hostname
+      PORT: 5000
+    depends_on:
+      - mongo # Le backend dépend de MongoDB
+    networks:
+      - chickenshop-network
+
+  frontend:
+    build: ./frontend # Construire l'image à partir du Dockerfile dans le dossier frontend
+    container_name: chickenshop-frontend
+    ports:
+      - "80:80" # Mapper le port du frontend au port de l'hôte (http://localhost:80 ou simplement http://localhost)
+    depends_on:
+      - backend # Le frontend dépend du backend pour les API
+    networks:
+      - chickenshop-network
+
+networks:
+  chickenshop-network:
+    driver: bridge
+
+volumes:
+  mongo-data: # Définir le volume pour la persistance des données MongoDB
