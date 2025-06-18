@@ -26,7 +26,7 @@ services:
     build: ./frontend # Construire l'image à partir du Dockerfile dans le dossier frontend
     container_name: chickenshop-frontend
     ports:
-      - "80:80" # Mapper le port du frontend au port de l'hôte (http://localhost:80 ou simplement http://localhost)
+      - "8080:80" # Mapper le port du frontend au port de l'hôte (http://localhost:80 ou simplement http://localhost)
     depends_on:
       - backend # Le frontend dépend du backend pour les API
     networks:
